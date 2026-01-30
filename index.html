@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deserve Better | John Doe</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #080808;
+            --text-main: #ffffff;
+            --accent: #ccff00;
+            --dim-text: #222222;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none; /* Custom cursor */
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: var(--bg-color);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+        }
+
+        /* --- CUSTOM CURSOR --- */
+        .cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, background-color 0.3s;
+            mix-blend-mode: difference;
+        }
+        body:active .cursor {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(204, 255, 0, 0.2);
+            border-color: transparent;
+        }
+
+        /* --- BACKGROUND GRID --- */
+        .bg-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* --- MAIN CONTAINER --- */
+        main {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+            z-index: 1;
+        }
+
+        /* --- LAYOUT ELEMENTS --- */
+
+        /* 1. The Background Watermark (IS) - Always behind */
+        .bg-word {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 35vw; /* Massive size */
+            line-height: 1;
+            color: var(--dim-text);
+            text-transform: uppercase;
+            z-index: -1;
+            user-select: none;
+            opacity: 0.5;
+        }
+
+        /* 2. Top Left Anchor (YOUR BUSINESS) */
+        .word-tl {
+            position: absolute;
+            top: 8vh;
+            left: 5vw;
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: clamp(2rem, 4vw, 4rem);
+            line-height: 0.9;
+            text-transform: uppercase;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.5);
+            text-align: left;
+            transition: color 0.5s;
+        }
+        .word-tl:hover { color: white; -webkit-text-stroke: 0; }
+
+        /* 3. Bottom Right Anchor (BETTER) */
+        .word-br {
+            position: absolute;
+            bottom: 8vh;
+            right: 5vw;
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: clamp(3rem, 6vw, 6rem);
+            line-height: 0.9;
+            text-transform: uppercase;
+            color: var(--accent);
+            text-align: right;
+            z-index: 2;
+        }
+
+        /* 4. Central Content (The Message) - Protected Zone */
+        .center-card {
+            position: relative;
+            width: 90%;
+            max-width: 550px;
+            background: rgba(10, 10, 10, 0.85); /* Stronger background for readability */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 3rem 2rem;
+            text-align: center;
+            z-index: 10;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .eyebrow {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.4;
+        }
+
+        p {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #cccccc;
+            margin-bottom: 2.5rem;
+        }
+
+        /* --- BUTTON --- */
+        .btn {
+            display: inline-block;
+            padding: 15px 35px;
+            background: white;
+            color: black;
+            text-decoration: none;
+            font-weight: 700;
+            font-family: 'Syne', sans-serif;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--accent);
+            z-index: -1;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .btn:hover {
+            color: black;
+            transform: translateY(-3px);
+        }
+
+        .btn:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        /* --- DESIGNER TAG --- */
+        .designer {
+            position: absolute;
+            bottom: 2rem;
+            left: 2rem;
+            font-size: 0.8rem;
+            color: #555;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* --- RESPONSIVE ADJUSTMENTS --- */
+        @media (max-width: 900px) {
+            .bg-word { font-size: 50vw; opacity: 0.3; }
+            .word-tl { top: 5vh; left: 2vw; font-size: 2.5rem; }
+            .word-br { bottom: 5vh; right: 2vw; font-size: 3.5rem; }
+            .center-card { padding: 2rem 1.5rem; }
+            .designer { display: none; } /* Hide side tag on mobile */
+            .cursor { display: none; } /* Hide cursor on touch */
+            * { cursor: auto; }
+        }
+
+        /* --- MOUSE MOVE ANIMATIONS (Parallax) --- */
+        /* Classes added by JS */
+        .word-tl.shifted { transform: translate(20px, 10px); }
+        .word-br.shifted { transform: translate(-20px, -10px); }
+        .bg-word.shifted { transform: translate(-50%, -50%) scale(1.05); }
+
+    </style>
+</head>
+<body>
+
+    <!-- Custom Cursor -->
+    <div class="cursor" id="cursor"></div>
+
+    <!-- Background Grid -->
+    <div class="bg-grid"></div>
+
+    <main id="scene">
+        
+        <!-- Background Watermark (Stays behind) -->
+        <div class="bg-word" data-speed="1">IS</div>
+
+        <!-- Top Left Text -->
+        <div class="word-tl" data-speed="2">
+            YOUR<br>BUSINESS
+        </div>
+
+        <!-- Center Card (Safe Zone) -->
+        <div class="center-card">
+            <span class="eyebrow">Kamloops Digital Upgrade</span>
+            <h2>Don't let your website hold you back.</h2>
+            <p>
+                You’ve built a reputation for quality. Your digital presence should reflect that standard, not drag it down.
+            </p>
+            <a href="mailto:xyz@gmail.com" class="btn">
+                Upgrade Now
+            </a>
+        </div>
+
+        <!-- Bottom Right Text -->
+        <div class="word-br" data-speed="3">
+            BETTER
+        </div>
+
+        <!-- Vertical Side Tag -->
+        <div class="designer">
+            Project — Himanshu Borse
+        </div>
+
+    </main>
+
+    <script>
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX;
+            const y = e.clientY;
+            
+            // Move Cursor
+            const cursor = document.getElementById('cursor');
+            cursor.style.left = x + 'px';
+            cursor.style.top = y + 'px';
+
+            // Parallax Calculation
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            
+            const moveX = (x - centerX) / 50; // Sensitivity
+            const moveY = (y - centerY) / 50;
+
+            // Apply movement to text layers
+            const bgWord = document.querySelector('.bg-word');
+            const tlWord = document.querySelector('.word-tl');
+            const brWord = document.querySelector('.word-br');
+
+            // "IS" moves slowly in background
+            bgWord.style.transform = `translate(calc(-50% + ${moveX * 1.5}px), calc(-50% + ${moveY * 1.5}px))`;
+            
+            // Top Left moves away from mouse slightly
+            tlWord.style.transform = `translate(${-moveX * 2}px, ${-moveY * 2}px)`;
+            
+            // Bottom Right moves away from mouse slightly
+            brWord.style.transform = `translate(${-moveX * 3}px, ${-moveY * 3}px)`;
+        });
+    </script>
+</body>
+</html>
