@@ -2,33 +2,51 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <title>Deserve Better | Himanshu Borse</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #080808;
+            --bg-color: #050505;
             --text-main: #ffffff;
             --accent: #ccff00;
-            --dim-text: #222222;
+            --dim-text: #1a1a1a;
+            --card-bg: rgba(5, 5, 5, 0.5);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            cursor: none; /* Custom cursor */
+            @media (hover: hover) {
+                cursor: none; 
+            }
         }
 
         body, html {
             width: 100%;
             height: 100%;
-            overflow: hidden;
+            overflow-x: hidden;
             background-color: var(--bg-color);
             font-family: 'Inter', sans-serif;
             color: var(--text-main);
+        }
+
+        /* --- BACKGROUND GRID --- */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 0;
+            pointer-events: none;
         }
 
         /* --- CUSTOM CURSOR --- */
@@ -43,9 +61,15 @@
             pointer-events: none;
             z-index: 9999;
             transform: translate(-50%, -50%);
-            transition: width 0.3s, height 0.3s, background-color 0.3s;
+            transition: width 0.3s, height 0.3s, background-color 0.3s, transform 0.1s;
             mix-blend-mode: difference;
+            display: none; 
         }
+
+        @media (hover: hover) {
+            .cursor { display: block; }
+        }
+
         body:active .cursor {
             width: 50px;
             height: 50px;
@@ -53,97 +77,121 @@
             border-color: transparent;
         }
 
-        /* --- BACKGROUND GRID --- */
-        .bg-grid {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            z-index: 0;
-            pointer-events: none;
-        }
-
         /* --- MAIN CONTAINER --- */
         main {
             position: relative;
             width: 100%;
-            height: 100%;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             perspective: 1000px;
             z-index: 1;
+            padding: 20px;
         }
 
-        /* --- LAYOUT ELEMENTS --- */
-
-        /* 1. The Background Watermark (IS) - Always behind */
+        /* --- BACKGROUND WATERMARK (IS) --- */
         .bg-word {
-            position: absolute;
+            position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
             font-family: 'Syne', sans-serif;
             font-weight: 800;
-            font-size: 35vw; /* Massive size */
+            font-size: clamp(20vw, 35vw, 50vw);
             line-height: 1;
-            color: var(--dim-text);
+            color: rgba(255, 255, 255, 0.06); 
             text-transform: uppercase;
-            z-index: -1;
+            z-index: 0;
             user-select: none;
-            opacity: 0.5;
+            transform: translate(-50%, -50%);
+            white-space: nowrap;
+            pointer-events: none;
+            animation: float 8s ease-in-out infinite;
         }
 
-        /* 2. Top Left Anchor (YOUR BUSINESS) */
+        @keyframes float {
+            0%, 100% { transform: translate(-50%, -50%); }
+            50% { transform: translate(-48%, -52%); }
+        }
+
+        /* --- EDGE TEXT (Desktop) --- */
+
+        /* 1. Top Left Anchor */
         .word-tl {
-            position: absolute;
-            top: 8vh;
-            left: 5vw;
+            position: fixed; 
+            top: 40px;       
+            left: 0;         
             font-family: 'Syne', sans-serif;
             font-weight: 800;
-            font-size: clamp(2rem, 4vw, 4rem);
+            /* Reduced max size to prevent overflow on small laptops */
+            font-size: clamp(1.8rem, 3vw, 3.5rem);
             line-height: 0.9;
             text-transform: uppercase;
             color: transparent;
             -webkit-text-stroke: 1px rgba(255, 255, 255, 0.5);
             text-align: left;
-            transition: color 0.5s;
+            transition: color 0.5s, transform 0.1s ease-out;
+            z-index: 2;
+            text-shadow: 0 0 20px rgba(0,0,0,0.5); 
+            padding-left: 0;
         }
         .word-tl:hover { color: white; -webkit-text-stroke: 0; }
 
-        /* 3. Bottom Right Anchor (BETTER) */
+        /* 2. Bottom Right Anchor - STACKED */
         .word-br {
-            position: absolute;
-            bottom: 8vh;
-            right: 5vw;
+            position: fixed; 
+            bottom: 40px;    
+            right: 0;        
             font-family: 'Syne', sans-serif;
             font-weight: 800;
-            font-size: clamp(3rem, 6vw, 6rem);
-            line-height: 0.9;
+            /* Reduced max size to fit better on smaller screens */
+            font-size: clamp(2rem, 3.5vw, 4.5rem);
+            line-height: 0.9; 
             text-transform: uppercase;
             color: var(--accent);
-            text-align: right;
+            text-align: right; 
             z-index: 2;
+            transition: transform 0.1s ease-out;
+            text-shadow: 0 0 20px rgba(0,0,0,0.5);
+            padding-right: 0;
         }
 
-        /* 4. Central Content (The Message) - Protected Zone */
+        /* --- DESIGNER TAG --- */
+        /* Moved to Top Right to avoid overlap with bottom text */
+        .designer {
+            position: fixed;
+            top: 40px;
+            right: 2rem;
+            font-size: 0.75rem;
+            color: #555;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            z-index: 5;
+        }
+
+        /* --- CENTER CARD --- */
+        .content-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 600px; 
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+        }
+
         .center-card {
             position: relative;
             width: 90%;
-            max-width: 550px;
-            background: rgba(10, 10, 10, 0.85); /* Stronger background for readability */
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 3rem 2rem;
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: clamp(2rem, 5vw, 3rem);
             text-align: center;
-            z-index: 10;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border-radius: 4px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
         }
 
         .eyebrow {
@@ -153,21 +201,24 @@
             color: var(--accent);
             margin-bottom: 1.5rem;
             display: block;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
         }
 
         h2 {
             font-family: 'Syne', sans-serif;
-            font-size: 1.5rem;
+            font-size: clamp(1.2rem, 3.5vw, 1.8rem);
             font-weight: 700;
             margin-bottom: 1.5rem;
-            line-height: 1.4;
+            line-height: 1.3;
+            text-shadow: 0 2px 10px rgba(0,0,0,1);
         }
 
         p {
-            font-size: 1rem;
-            line-height: 1.7;
-            color: #cccccc;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            line-height: 1.6;
+            color: #e0e0e0;
             margin-bottom: 2.5rem;
+            text-shadow: 0 1px 5px rgba(0,0,0,1);
         }
 
         /* --- BUTTON --- */
@@ -183,6 +234,8 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            border-radius: 2px;
+            z-index: 2;
         }
 
         .btn::after {
@@ -202,6 +255,7 @@
         .btn:hover {
             color: black;
             transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(204, 255, 0, 0.3);
         }
 
         .btn:hover::after {
@@ -209,41 +263,87 @@
             transform-origin: left;
         }
 
-        /* --- DESIGNER TAG --- */
-        .designer {
-            position: absolute;
-            bottom: 2rem;
-            left: 2rem;
-            font-size: 0.8rem;
-            color: #555;
-            writing-mode: vertical-rl;
-            text-orientation: mixed;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        /* --- RESPONSIVE ADJUSTMENTS --- */
+        /* --- RESPONSIVE MOBILE / TABLET OVERRIDES --- */
         @media (max-width: 900px) {
-            .bg-word { font-size: 50vw; opacity: 0.3; }
-            .word-tl { top: 5vh; left: 2vw; font-size: 2.5rem; }
-            .word-br { bottom: 5vh; right: 2vw; font-size: 3.5rem; }
-            .center-card { padding: 2rem 1.5rem; }
-            .designer { display: none; } /* Hide side tag on mobile */
-            .cursor { display: none; } /* Hide cursor on touch */
-            * { cursor: auto; }
+            main {
+                flex-direction: column;
+                justify-content: center; /* Center vertically on mobile */
+                padding: 0 1.5rem;
+                height: auto;
+                min-height: 100vh;
+            }
+
+            /* Designer Tag Adjustment for Mobile */
+            .designer {
+                position: relative; /* Moves into flow */
+                top: auto;
+                right: auto;
+                writing-mode: horizontal-tb; /* Horizontal text */
+                text-align: center;
+                margin-bottom: 1rem;
+                margin-top: 1rem;
+                color: #666;
+            }
+
+            /* Reset edge text to flow */
+            .word-tl, .word-br {
+                position: relative;
+                top: auto !important;
+                left: auto !important;
+                bottom: auto !important;
+                right: auto !important;
+                transform: none !important;
+                text-align: center;
+                width: 100%;
+            }
+            
+            .word-tl {
+                font-size: 2rem; 
+                margin-bottom: 0.5rem;
+                color: rgba(255,255,255,0.7);
+                -webkit-text-stroke: 0;
+            }
+
+            .word-br {
+                font-size: 2.5rem;
+                margin-top: 1rem;
+                margin-bottom: 2rem;
+                line-height: 1;
+            }
+
+            .content-wrapper {
+                width: 100%;
+                margin: 1rem 0;
+            }
+
+            .center-card {
+                width: 100%;
+                margin: 0;
+                background: rgba(5, 5, 5, 0.7);
+                border: 1px solid rgba(255,255,255,0.2);
+            }
+            
+            .bg-word {
+                font-size: 80vw;
+                opacity: 0.4;
+            }
+            
+            .btn { width: 100%; text-align: center; }
         }
 
-        /* --- MOUSE MOVE ANIMATIONS (Parallax) --- */
-        /* Classes added by JS */
-        .word-tl.shifted { transform: translate(20px, 10px); }
-        .word-br.shifted { transform: translate(-20px, -10px); }
-        .bg-word.shifted { transform: translate(-50%, -50%) scale(1.05); }
+        /* Extra small screens */
+        @media (max-width: 400px) {
+            .word-tl { font-size: 1.5rem; }
+            .word-br { font-size: 2rem; }
+            .center-card { padding: 1.5rem; }
+            h2 { font-size: 1.2rem; }
+        }
 
     </style>
 </head>
 <body>
 
-    <!-- Custom Cursor -->
+    <!-- Custom Cursor (Desktop Only) -->
     <div class="cursor" id="cursor"></div>
 
     <!-- Background Grid -->
@@ -251,69 +351,86 @@
 
     <main id="scene">
         
-        <!-- Background Watermark (Stays behind) -->
-        <div class="bg-word" data-speed="1">IS</div>
+        <!-- Background Watermark (IS) -->
+        <div class="bg-word" id="bgWord">IS</div>
 
-        <!-- Top Left Text -->
-        <div class="word-tl" data-speed="2">
+        <!-- Designer Tag (Moved to Top Right via CSS) -->
+        <div class="designer">
+            Project — Himanshu Borse
+        </div>
+
+        <!-- Top Text (Edge Aligned) -->
+        <div class="word-tl" id="tlWord" data-speed="2">
             YOUR<br>BUSINESS
         </div>
 
-        <!-- Center Card (Safe Zone) -->
-        <div class="center-card">
-            <span class="eyebrow">Kamloops Digital Upgrade</span>
-            <h2>Don't let your website hold you back.</h2>
-            <p>
-                You’ve built a reputation for quality. Your digital presence should reflect that standard, not drag it down.
-            </p>
-            <a href="mailto:himanshuborse.ca@gmail.com" class="btn">
-                Upgrade Now
-            </a>
+        <!-- Center Wrapper -->
+        <div class="content-wrapper">
+            <!-- Center Card -->
+            <div class="center-card" data-speed="0">
+                <span class="eyebrow">Kamloops Digital Upgrade</span>
+                <h2>Don't let your website hold you back.</h2>
+                <p>
+                    You’ve built a reputation for quality. Your digital presence should reflect that standard, not drag it down.
+                </p>
+                <a href="mailto:himanshuborse.ca@gmail.com" class="btn">
+                    Upgrade Now
+                </a>
+            </div>
         </div>
 
-        <!-- Bottom Right Text -->
-        <div class="word-br" data-speed="3">
-           DESERVES BETTER
-        </div>
-
-        <!-- Vertical Side Tag -->
-        <div class="designer">
-            Project — Himanshu Borse
+        <!-- Bottom Text (Stacked and Edge Aligned) -->
+        <div class="word-br" id="brWord" data-speed="3">
+           DESERVES<br>BETTER
         </div>
 
     </main>
 
     <script>
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        
+        if(!isTouchDevice) {
+            const bgWord = document.getElementById('bgWord');
+            bgWord.style.animation = 'none'; 
+        }
+
         document.addEventListener('mousemove', (e) => {
+            if (isTouchDevice) return;
+
             const x = e.clientX;
             const y = e.clientY;
             
-            // Move Cursor
             const cursor = document.getElementById('cursor');
             cursor.style.left = x + 'px';
             cursor.style.top = y + 'px';
 
-            // Parallax Calculation
             const centerX = window.innerWidth / 2;
             const centerY = window.innerHeight / 2;
             
-            const moveX = (x - centerX) / 50; // Sensitivity
-            const moveY = (y - centerY) / 50;
+            const moveX = (x - centerX) / 60; 
+            const moveY = (y - centerY) / 60;
 
-            // Apply movement to text layers
-            const bgWord = document.querySelector('.bg-word');
-            const tlWord = document.querySelector('.word-tl');
-            const brWord = document.querySelector('.word-br');
+            const tlWord = document.getElementById('tlWord');
+            const brWord = document.getElementById('brWord');
+            const bgWord = document.getElementById('bgWord');
 
-            // "IS" moves slowly in background
-            bgWord.style.transform = `translate(calc(-50% + ${moveX * 1.5}px), calc(-50% + ${moveY * 1.5}px))`;
+            // Parallax moves them slightly from their fixed edge positions
+            bgWord.style.transform = `translate(calc(-50% + ${moveX * -2}px), calc(-50% + ${moveY * -2}px))`;
             
-            // Top Left moves away from mouse slightly
-            tlWord.style.transform = `translate(${-moveX * 2}px, ${-moveY * 2}px)`;
-            
-            // Bottom Right moves away from mouse slightly
-            brWord.style.transform = `translate(${-moveX * 3}px, ${-moveY * 3}px)`;
+            // Move away from mouse
+            tlWord.style.transform = `translate(${-moveX * 4}px, ${-moveY * 4}px)`;
+            brWord.style.transform = `translate(${-moveX * 6}px, ${-moveY * 6}px)`;
         });
+
+        const btn = document.querySelector('.btn');
+        if(isTouchDevice) {
+            btn.addEventListener('touchstart', () => {
+                btn.style.transform = 'scale(0.98)';
+            });
+            btn.addEventListener('touchend', () => {
+                btn.style.transform = 'scale(1)';
+            });
+        }
     </script>
 </body>
 </html>
